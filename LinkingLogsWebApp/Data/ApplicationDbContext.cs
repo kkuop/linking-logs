@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using LinkingLogsWebApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,11 @@ namespace LinkingLogsWebApp.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
+        public DbSet<Job> Jobs { get; set; }
+        public DbSet<JobBid> JobBids { get; set; }
+        public DbSet<Site> Sites { get; set; }
+        public DbSet<SiteManager> SiteManagers { get; set; }
+        public DbSet<Trucker> Truckers { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
