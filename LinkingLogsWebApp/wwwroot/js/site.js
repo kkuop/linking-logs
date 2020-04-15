@@ -2,11 +2,11 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-(function ($) {
-    $('#cardManager').hover(function () {
-        $(this).toggleClass("shadow-lg");
-    });
-    $('#cardTrucker').hover(function () {
-        $(this).toggleClass("shadow-lg");
-    });
-})(jQuery);
+//(function ($) {
+//    $('#cardManager').hover(function () {
+//        $(this).toggleClass("shadow-lg");
+//    });
+//    $('#cardTrucker').hover(function () {
+//        $(this).toggleClass("shadow-lg");
+//    });
+//})(jQuery);
