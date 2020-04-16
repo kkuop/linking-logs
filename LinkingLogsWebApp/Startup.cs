@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using LinkingLogsWebApp.ActionFilters;
+using LinkingLogsWebApp.Contracts;
 
 namespace LinkingLogsWebApp
 {
@@ -38,6 +39,7 @@ namespace LinkingLogsWebApp
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
             services.AddScoped<ClaimsPrincipal>(s => s.GetService<IHttpContextAccessor>().HttpContext.User);
+            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             services.AddControllers(config => { config.Filters.Add(typeof(GlobalRouting)); }) ;
             services.AddControllersWithViews();
             services.AddRazorPages();

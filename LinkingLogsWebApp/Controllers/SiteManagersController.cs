@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LinkingLogsWebApp.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,11 @@ namespace LinkingLogsWebApp.Controllers
     [Authorize(Roles="SiteManager")]
     public class SiteManagersController : Controller
     {
+        private IRepositoryWrapper _repo;
+        public SiteManagersController(IRepositoryWrapper repo)
+        {
+            _repo = repo;
+        }
         // GET: SiteManagers
         public ActionResult Index()
         {
