@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using LinkingLogsWebApp.Contracts;
+using LinkingLogsWebApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +22,12 @@ namespace LinkingLogsWebApp.Controllers
         // GET: SiteManagers
         public ActionResult Index()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            if(foundUser == null)
+            {
+                return RedirectToAction("Create");
+            }
             return View();
         }
 
@@ -38,12 +46,15 @@ namespace LinkingLogsWebApp.Controllers
         // POST: SiteManagers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(SiteManager siteManager)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             try
             {
                 // TODO: Add insert logic here
-
+                siteManager.IdentityUserId = userId;
+                _repo.SiteManager.Create(siteManager);
+                _repo.Save();
                 return RedirectToAction(nameof(Index));
             }
             catch

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using LinkingLogsWebApp.Contracts;
+using LinkingLogsWebApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +14,25 @@ namespace LinkingLogsWebApp.Controllers
     [Authorize(Roles="SiteManager")]
     public class SitesController : Controller
     {
+        private IRepositoryWrapper _repo;
+        public SitesController(IRepositoryWrapper repo)
+        {
+            _repo = repo;
+        }
         // GET: Sites
         public ActionResult Index()
+        {
+            return View();
+        }
+
+        // GET: Sites/ClosedSites
+        public ActionResult ClosedSites()
+        {
+            return View();
+        }
+
+        // GET: Sites/ActiveSites
+        public ActionResult ActiveSites()
         {
             return View();
         }
@@ -32,12 +52,20 @@ namespace LinkingLogsWebApp.Controllers
         // POST: Sites/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Site site)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
             try
             {
                 // TODO: Add insert logic here
-
+                if(site.OpeningDate < DateTime.Now && site.ClosingDate > DateTime.Now)
+                {
+                    site.IsActive = true;
+                }
+                site.SiteManagerId = foundUser.SiteManagerId;
+                _repo.Site.Create(site);
+                _repo.Save();
                 return RedirectToAction(nameof(Index));
             }
             catch
