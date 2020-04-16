@@ -109,10 +109,15 @@ namespace LinkingLogsWebApp.Data.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdentityUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SiteManagerId");
+
+                    b.HasIndex("IdentityUserId");
 
                     b.ToTable("SiteManagers");
                 });
@@ -130,6 +135,9 @@ namespace LinkingLogsWebApp.Data.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdentityUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -140,6 +148,8 @@ namespace LinkingLogsWebApp.Data.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("TruckerId");
+
+                    b.HasIndex("IdentityUserId");
 
                     b.ToTable("Truckers");
                 });
@@ -387,6 +397,20 @@ namespace LinkingLogsWebApp.Data.Migrations
                         .HasForeignKey("SiteManagerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LinkingLogsWebApp.Models.SiteManager", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
+                        .WithMany()
+                        .HasForeignKey("IdentityUserId");
+                });
+
+            modelBuilder.Entity("LinkingLogsWebApp.Models.Trucker", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
+                        .WithMany()
+                        .HasForeignKey("IdentityUserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

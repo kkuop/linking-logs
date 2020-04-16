@@ -4,5 +4,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Site Manager Index</h1>
-
+<div class="container-fluid">
+    <div class="row ll-row">
+        <div class="col-3">
+            <div class="row">
+                <div class="col">
+                    <a class="ll-link" asp-controller="Sites" asp-action="Create">&#x2795; New site</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-7">
+            Middle
+        </div>
+        <div class="col-2">
+            Right column
+        </div>
+    </div>
+</div>
