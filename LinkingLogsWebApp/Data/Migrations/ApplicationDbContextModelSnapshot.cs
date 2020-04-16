@@ -46,6 +46,9 @@ namespace LinkingLogsWebApp.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<double>("AmountBid")
+                        .HasColumnType("float");
+
                     b.Property<bool>("IsWinningBid")
                         .HasColumnType("bit");
 

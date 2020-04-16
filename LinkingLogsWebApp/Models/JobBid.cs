@@ -10,6 +10,7 @@ namespace LinkingLogsWebApp.Models
     {
         public int JobBidId { get; set; }
         public bool IsWinningBid { get; set; }
+        public double AmountBid { get; set; }
         [ForeignKey("Job")]
         public int JobId { get; set; }
         public Job Job { get; set; }
