@@ -1,11 +1,14 @@
 .ll-card {
-    width:400px;
+    width:375px;
     display:inline-block;
     margin:10px;
 }
+
 .ll-card:hover {
-    box-shadow: 2px 2px 12px 3px;
+    box-shadow: 1px -1px 15px 3px grey;
+    width:380px;
 }
+
 .ll-card-text {
     font-size:1.5em;
     font-family: 'Arial Rounded MT','Segoe UI', 'Times New Roman';
