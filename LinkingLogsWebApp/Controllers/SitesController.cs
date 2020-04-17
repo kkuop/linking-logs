@@ -34,7 +34,22 @@ namespace LinkingLogsWebApp.Controllers
         // GET: Sites/ActiveSites
         public ActionResult ActiveSites()
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(u => u.IdentityUserId == userId).SingleOrDefault();
+            var sites = _repo.Site.FindByCondition(s => s.SiteManagerId == foundUser.SiteManagerId);
+            foreach(var site in sites)
+            {
+                if(site.OpeningDate < DateTime.Now && site.ClosingDate > DateTime.Now)
+                {
+                    site.IsActive = true;
+                }
+                else
+                {
+                    site.IsActive = false;
+                }
+            }
+            sites = sites.Where(a => a.IsActive == true);
+            return View(sites);
         }
 
         // GET: Sites/Details/5
