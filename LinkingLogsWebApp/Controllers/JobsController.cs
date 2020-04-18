@@ -2,13 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LinkingLogsWebApp.Contracts;
+using LinkingLogsWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkingLogsWebApp.Controllers
 {
+    [Authorize(Roles ="SiteManagers, Truckers")]
     public class JobsController : Controller
     {
+        private IRepositoryWrapper _repo;
+        public JobsController(IRepositoryWrapper repo)
+        {
+            _repo = repo;
+        }
         // GET: Jobs
         public ActionResult Index()
         {
@@ -30,7 +39,7 @@ namespace LinkingLogsWebApp.Controllers
         // POST: Jobs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Job job)
         {
             try
             {
