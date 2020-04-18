@@ -1,18 +1,17 @@
 ﻿@model IEnumerable<LinkingLogsWebApp.Models.Site>
 
 @{
-    ViewData["Title"] = "ActiveSites";
+    ViewData["Title"] = "UpcomingSites";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Active Sites</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-7">
+        <div class="col-6">
+            <h1>Upcoming Sites</h1>
+
+            <p>
+                <a asp-action="Create">Create New</a>
+            </p>
             <table class="table">
                 <thead>
                     <tr>
@@ -57,7 +56,7 @@
 
                 </tbody>
             </table>
+
         </div>
     </div>
 </div>
-

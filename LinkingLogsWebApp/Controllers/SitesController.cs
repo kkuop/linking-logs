@@ -32,7 +32,7 @@ namespace LinkingLogsWebApp.Controllers
             var foundUser = _repo.SiteManager.FindByCondition(u => u.IdentityUserId == userId).SingleOrDefault();
             var sites = _repo.Site.FindByCondition(s => s.SiteManagerId == foundUser.SiteManagerId).ToList();
             var updatedSites = UpdateSiteStatus(sites);
-            updatedSites = updatedSites.Where(a => a.IsActive == false).ToList();
+            updatedSites = updatedSites.Where(a => a.IsActive == false && a.ClosingDate < DateTime.Now).ToList();
             return View(updatedSites);
         }
 
@@ -44,6 +44,17 @@ namespace LinkingLogsWebApp.Controllers
             var sites = _repo.Site.FindByCondition(s => s.SiteManagerId == foundUser.SiteManagerId).ToList();
             var updatedSites = UpdateSiteStatus(sites);
             updatedSites = updatedSites.Where(a => a.IsActive == true).ToList();
+            return View(updatedSites);
+        }
+
+        // GET: Sites/UpcomingSites
+        public ActionResult UpcomingSites()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var sites = _repo.Site.FindByCondition(s => s.SiteManagerId == foundUser.SiteManagerId).ToList();
+            var updatedSites = UpdateSiteStatus(sites);
+            updatedSites = updatedSites.Where(a => a.IsActive == false && a.OpeningDate > DateTime.Now).ToList();
             return View(updatedSites);
         }
 
