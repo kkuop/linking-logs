@@ -28,3 +28,7 @@
 .btn-success {
     background-color: #1d3e1d;
 }
+
+.ll-bg-gradient {
+    background-image: radial-gradient(green, light green, white);
+}

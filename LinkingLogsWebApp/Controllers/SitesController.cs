@@ -28,7 +28,12 @@ namespace LinkingLogsWebApp.Controllers
         // GET: Sites/ClosedSites
         public ActionResult ClosedSites()
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(u => u.IdentityUserId == userId).SingleOrDefault();
+            var sites = _repo.Site.FindByCondition(s => s.SiteManagerId == foundUser.SiteManagerId).ToList();
+            var updatedSites = UpdateSiteStatus(sites);
+            updatedSites = updatedSites.Where(a => a.IsActive == false).ToList();
+            return View(updatedSites);
         }
 
         // GET: Sites/ActiveSites
@@ -36,26 +41,10 @@ namespace LinkingLogsWebApp.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var foundUser = _repo.SiteManager.FindByCondition(u => u.IdentityUserId == userId).SingleOrDefault();
-            var sites = _repo.Site.FindByCondition(s => s.SiteManagerId == foundUser.SiteManagerId);
-            foreach(var site in sites)
-            {
-                if(site.OpeningDate < DateTime.Now && site.ClosingDate > DateTime.Now)
-                {
-                    site.IsActive = true;
-                }
-                else
-                {
-                    site.IsActive = false;
-                }
-            }
-            sites = sites.Where(a => a.IsActive == true);
-            return View(sites);
-        }
-
-        // GET: Sites/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
+            var sites = _repo.Site.FindByCondition(s => s.SiteManagerId == foundUser.SiteManagerId).ToList();
+            var updatedSites = UpdateSiteStatus(sites);
+            updatedSites = updatedSites.Where(a => a.IsActive == true).ToList();
+            return View(updatedSites);
         }
 
         // GET: Sites/Create
@@ -81,7 +70,7 @@ namespace LinkingLogsWebApp.Controllers
                 site.SiteManagerId = foundUser.SiteManagerId;
                 _repo.Site.Create(site);
                 _repo.Save();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index","SiteManagers");
             }
             catch
             {
@@ -92,47 +81,104 @@ namespace LinkingLogsWebApp.Controllers
         // GET: Sites/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var site = _repo.Site.FindByCondition(a => a.SiteId == id).SingleOrDefault();
+            if (site.SiteManagerId == foundUser.SiteManagerId)
+            {
+                return View(site);
+            }
+            return NotFound();
         }
 
         // POST: Sites/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Site site)
         {
-            try
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var foundSite = _repo.Site.FindByCondition(a => a.SiteId == site.SiteId).SingleOrDefault();
+            if(foundSite != null)
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                if (foundUser.SiteManagerId == site.SiteManagerId)
+                {
+                    try
+                    {
+                        // TODO: Add update logic here
+                        foundSite.Name = site.Name;
+                        foundSite.Latitude = site.Latitude;
+                        foundSite.Longitude = site.Longitude;
+                        foundSite.OpeningDate = site.OpeningDate;
+                        foundSite.ClosingDate = site.ClosingDate;
+                        _repo.Site.Update(foundSite);
+                        _repo.Save();
+                        return RedirectToAction("Index","SiteManagers");
+                    }
+                    catch
+                    {
+                        return View();
+                    }
+                }
             }
-            catch
-            {
-                return View();
-            }
+            return View();
         }
 
         // GET: Sites/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var foundSite = _repo.Site.FindByCondition(a => a.SiteId == id).SingleOrDefault();
+            if(foundSite.SiteManagerId == foundUser.SiteManagerId)
+            {
+                return View(foundSite);
+            }
+            return NotFound();
         }
 
         // POST: Sites/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Site site)
         {
-            try
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var foundSite = _repo.Site.FindByCondition(a => a.SiteId == id).SingleOrDefault();
+            if (foundSite != null)
             {
-                // TODO: Add delete logic here
+                if (foundUser.SiteManagerId == foundSite.SiteManagerId)
+                {
+                    try
+                    {
+                        
+                        _repo.Site.Delete(foundSite);
+                        _repo.Save();
+                        return RedirectToAction("Index", "SiteManagers");
+                    }
+                    catch
+                    {
+                        return View();
+                    }
+                }
+            }
+            return View();
+        }
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+        public List<Site> UpdateSiteStatus(List<Site> sites)
+        {
+            foreach (var site in sites)
             {
-                return View();
+                if (site.OpeningDate < DateTime.Now && site.ClosingDate > DateTime.Now)
+                {
+                    site.IsActive = true;
+                }
+                else
+                {
+                    site.IsActive = false;
+                }
             }
+            return sites;
         }
     }
 }
