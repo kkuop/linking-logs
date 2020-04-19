@@ -15,6 +15,7 @@ namespace LinkingLogsWebApp.Data
         public DbSet<Site> Sites { get; set; }
         public DbSet<SiteManager> SiteManagers { get; set; }
         public DbSet<Trucker> Truckers { get; set; }
+        public DbSet<WoodType> WoodTypes { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -40,6 +41,21 @@ namespace LinkingLogsWebApp.Data
                         Name = "Trucker",
                         NormalizedName = "TRUCKER"
                     }
+                );
+            builder.Entity<WoodType>()
+                .HasData(
+                    new WoodType { WoodTypeId = 1, Type="Birch"},
+                    new WoodType { WoodTypeId = 2, Type="Cedar"},
+                    new WoodType { WoodTypeId = 3, Type="Cypress"},
+                    new WoodType { WoodTypeId = 4, Type="Douglas-Fir"},
+                    new WoodType { WoodTypeId = 5, Type="Fir"},
+                    new WoodType { WoodTypeId = 6, Type="Hemlock"},
+                    new WoodType { WoodTypeId = 7, Type="Pine"},
+                    new WoodType { WoodTypeId = 8, Type="Redwood"},
+                    new WoodType { WoodTypeId = 9, Type="Spruce"},
+                    new WoodType { WoodTypeId = 10, Type="Cherry"},
+                    new WoodType { WoodTypeId = 11, Type="Chestnut"},
+                    new WoodType { WoodTypeId = 12, Type="Ironwood"}
                 );
         }
     }

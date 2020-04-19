@@ -32,9 +32,14 @@ namespace LinkingLogsWebApp.Data.Migrations
                     b.Property<int>("SiteId")
                         .HasColumnType("int");
 
+                    b.Property<int>("WoodTypeId")
+                        .HasColumnType("int");
+
                     b.HasKey("JobId");
 
                     b.HasIndex("SiteId");
+
+                    b.HasIndex("WoodTypeId");
 
                     b.ToTable("Jobs");
                 });
@@ -158,6 +163,83 @@ namespace LinkingLogsWebApp.Data.Migrations
                     b.HasIndex("IdentityUserId");
 
                     b.ToTable("Truckers");
+                });
+
+            modelBuilder.Entity("LinkingLogsWebApp.Models.WoodType", b =>
+                {
+                    b.Property<int>("WoodTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("WoodTypeId");
+
+                    b.ToTable("WoodTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            WoodTypeId = 1,
+                            Type = "Birch"
+                        },
+                        new
+                        {
+                            WoodTypeId = 2,
+                            Type = "Cedar"
+                        },
+                        new
+                        {
+                            WoodTypeId = 3,
+                            Type = "Cypress"
+                        },
+                        new
+                        {
+                            WoodTypeId = 4,
+                            Type = "Douglas-Fir"
+                        },
+                        new
+                        {
+                            WoodTypeId = 5,
+                            Type = "Fir"
+                        },
+                        new
+                        {
+                            WoodTypeId = 6,
+                            Type = "Hemlock"
+                        },
+                        new
+                        {
+                            WoodTypeId = 7,
+                            Type = "Pine"
+                        },
+                        new
+                        {
+                            WoodTypeId = 8,
+                            Type = "Redwood"
+                        },
+                        new
+                        {
+                            WoodTypeId = 9,
+                            Type = "Spruce"
+                        },
+                        new
+                        {
+                            WoodTypeId = 10,
+                            Type = "Cherry"
+                        },
+                        new
+                        {
+                            WoodTypeId = 11,
+                            Type = "Chestnut"
+                        },
+                        new
+                        {
+                            WoodTypeId = 12,
+                            Type = "Ironwood"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -377,6 +459,12 @@ namespace LinkingLogsWebApp.Data.Migrations
                     b.HasOne("LinkingLogsWebApp.Models.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LinkingLogsWebApp.Models.WoodType", "WoodType")
+                        .WithMany()
+                        .HasForeignKey("WoodTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
