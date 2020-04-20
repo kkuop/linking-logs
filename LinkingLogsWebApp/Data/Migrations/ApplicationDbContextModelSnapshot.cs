@@ -32,6 +32,9 @@ namespace LinkingLogsWebApp.Data.Migrations
                     b.Property<int>("SiteId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("WoodTypeId")
                         .HasColumnType("int");
 

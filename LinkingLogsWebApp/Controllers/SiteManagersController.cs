@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using LinkingLogsWebApp.Contracts;
 using LinkingLogsWebApp.Models;
+using LinkingLogsWebApp.Views.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,12 @@ namespace LinkingLogsWebApp.Controllers
             {
                 return RedirectToAction("Create");
             }
-            return View();
+            SiteManagerIndexViewModel siteManagerIndexViewModel = new SiteManagerIndexViewModel()
+            {
+                AllSites = _repo.Site.FindByCondition(a => a.SiteManagerId == foundUser.SiteManagerId).ToList(),
+                ActiveSites = _repo.Site.FindByCondition(a => a.OpeningDate < DateTime.Now && a.ClosingDate > DateTime.Now && a.SiteManagerId == foundUser.SiteManagerId).ToList()
+            };
+            return View(siteManagerIndexViewModel);
         }
 
         // GET: SiteManagers/Details/5

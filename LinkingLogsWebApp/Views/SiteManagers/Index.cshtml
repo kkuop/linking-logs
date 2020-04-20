@@ -1,4 +1,4 @@
-﻿
+﻿@model LinkingLogsWebApp.Views.ViewModels.SiteManagerIndexViewModel 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -7,7 +7,20 @@
 <div class="container-fluid">
     <div class="row ll-row">
         <div class="col-3">
-            Left column
+            <div class="row ll-status-box text-center">
+                <div class="col">
+                    <div class="row ll-status-content">
+                        <div class="col">
+                            <span>Active Sites</span>
+                        </div>                        
+                    </div>
+                    <div class="row ll-status-content">
+                        <div class="col">
+                            @Html.Raw(Model.ActiveSites.ToList().Count)
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-7">
             Middle

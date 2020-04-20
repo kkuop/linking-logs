@@ -42,4 +42,22 @@
     background-color: #80808045;
     border: 1px solid black;
     padding: 30px;
+    margin-top: 30px;
+}
+
+.ll-navbar-margin {
+    margin-left: 5px;
+    margin-right:5px;
+}
+
+.ll-status-box{
+    width:100px;
+    height:120px;
+    border:1px solid black;
+    background-color:#b0b0b0;
+}
+
+.ll-status-content {
+    padding:3px;
+    font-size:1.2em;
 }

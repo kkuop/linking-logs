@@ -1,11 +1,11 @@
 ﻿@model LinkingLogsWebApp.Views.ViewModels.OpenJobsViewModel
 
 @{
-    ViewData["Title"] = "Open";
+    ViewData["Title"] = "Pending";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Open</h1>
+<h1>Pending</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -39,9 +39,9 @@
                         @Html.Raw(item.Site.Name)
                     </td>
                     <td>
-                        @Html.ActionLink("Edit", "Edit", new { id=item.JobId }) |
+                        @Html.ActionLink("Edit", "Edit", new { id = item.JobId }) |
                         @Html.ActionLink("Details", "Details", new { id = item.JobId }) |
-                        @Html.ActionLink("Delete", "Delete", new { id=item.JobId })
+                        @Html.ActionLink("Delete", "Delete", new { id = item.JobId })
                     </td>
                 </tr>
             }
