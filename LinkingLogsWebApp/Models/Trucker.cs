@@ -15,6 +15,8 @@ namespace LinkingLogsWebApp.Models
         public string FirstName { get; set; }
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
+        public string HomeAddress { get; set; }
+        
         [Display(Name = "Company Name")]
         public string CompanyName { get; set; }
         public double Latitude { get; set; }

@@ -29,10 +29,15 @@ namespace LinkingLogsWebApp.Controllers
             {
                 return RedirectToAction("Create");
             }
+            var jobs = _repo.Job.FindAll().Join(_repo.Site.FindAll(), a => a.SiteId, b => b.SiteId, (a, b) => new { Job = a, Site = b }).Join(_repo.SiteManager.FindAll(), a => a.Site.SiteManagerId, b => b.SiteManagerId, (b, c) => new { JobSite = b, SiteManager = c }).Where(a => a.SiteManager.SiteManagerId == foundUser.SiteManagerId);
             SiteManagerIndexViewModel siteManagerIndexViewModel = new SiteManagerIndexViewModel()
             {
-                AllSites = _repo.Site.FindByCondition(a => a.SiteManagerId == foundUser.SiteManagerId).ToList(),
-                ActiveSites = _repo.Site.FindByCondition(a => a.OpeningDate < DateTime.Now && a.ClosingDate > DateTime.Now && a.SiteManagerId == foundUser.SiteManagerId).ToList()
+                AllSites = _repo.Site.FindByCondition(a => a.SiteManagerId == foundUser.SiteManagerId),
+                UpcomingSites = _repo.Site.FindByCondition(a => a.OpeningDate > DateTime.Now),
+                ActiveSites = _repo.Site.FindByCondition(a => a.OpeningDate < DateTime.Now && a.ClosingDate > DateTime.Now && a.SiteManagerId == foundUser.SiteManagerId),
+                OpenJobs = jobs.Select(a => a.JobSite.Job).Where(a => a.Status == "Open"),
+                PendingJobs = jobs.Select(a => a.JobSite.Job).Where(a => a.Status == "Pending"),
+                ApprovedJobs = jobs.Select(a => a.JobSite.Job).Where(a => a.Status == "Approved")
             };
             return View(siteManagerIndexViewModel);
         }

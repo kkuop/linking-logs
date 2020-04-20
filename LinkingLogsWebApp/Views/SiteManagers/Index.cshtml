@@ -6,12 +6,29 @@
 
 <div class="container-fluid">
     <div class="row ll-row">
-        <div class="col-3">
+        <div class="col-2">
+            <a asp-controller="Sites" asp-action="UpcomingSites">
+                <div class="row ll-status-box text-center">
+                    <div class="col">
+                        <div class="row ll-status-header">
+                            <div class="col">
+                                <span>Upcoming Sites</span>
+                            </div>
+                        </div>
+                        <div class="row ll-status-content">
+                            <div class="col">
+                                @Html.Raw(Model.UpcomingSites.ToList().Count)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a asp-controller="Sites" asp-action="ActiveSites">
             <div class="row ll-status-box text-center">
                 <div class="col">
-                    <div class="row ll-status-content">
+                    <div class="row ll-status-header">
                         <div class="col">
-                            <span>Active Sites</span>
+                            <span>Active<br />Sites</span>
                         </div>                        
                     </div>
                     <div class="row ll-status-content">
@@ -21,12 +38,99 @@
                     </div>
                 </div>
             </div>
+            </a>
         </div>
-        <div class="col-7">
-            Middle
+        <div class="col-8">
+            <div class="row">
+                <div class="col">
+                    <div id="theMap" style="width:100%;height:500px">
+                        
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-2">
-            Right column
+            <a asp-controller="Jobs" asp-action="Open">
+                <div class="row ll-status-box text-center">
+                    <div class="col">
+                        <div class="row ll-status-header">
+                            <div class="col">
+                                <span>Open<br />Jobs</span>
+                            </div>
+                        </div>
+                        <div class="row ll-status-content">
+                            <div class="col">
+                                @Html.Raw(Model.OpenJobs.ToList().Count)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a asp-controller="Jobs" asp-action="Pending">
+                <div class="row ll-status-box text-center">
+                    <div class="col">
+                        <div class="row ll-status-header">
+                            <div class="col">
+                                <span>Pending Jobs</span>
+                            </div>
+                        </div>
+                        <div class="row ll-status-content">
+                            <div class="col">
+                                @Html.Raw(Model.PendingJobs.ToList().Count)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a asp-controller="Jobs" asp-action="Approved">
+                <div class="row ll-status-box text-center">
+                    <div class="col">
+                        <div class="row ll-status-header">
+                            <div class="col">
+                                <span>Approved Jobs</span>
+                            </div>
+                        </div>
+                        <div class="row ll-status-content">
+                            <div class="col">
+                                @Html.Raw(Model.ApprovedJobs.ToList().Count)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 </div>
+@if(Model.ActiveSites.ToList().Count< 1)
+{
+
+}
+else
+{
+    <script>
+        function theMap() {
+            var myProp = {
+                center: new google.maps.LatLng(@Model.ActiveSites.ToList()[0].Latitude,@Model.ActiveSites.ToList()[0].Longitude),
+                zoom:10,
+            };
+            var map = new google.maps.Map(document.getElementById("theMap"), mapProp);
+            var infoWindow = new google.maps.InfoWindow();
+            @foreach(var item in Model.ActiveSites.ToList())
+            {
+            <text>
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(@item.Latitude,@item.Longitude),
+                map: map
+            });
+            (function (marker) {
+                google.maps.event.addListener(marker, 'click', function () {
+                    infoWindow.setContent("@item.Name");
+                    infoWindow.open(map, marker);
+                });
+            })(marker);
+            </text>
+            }
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/js?key=@ApiKeys.GoogleKey&callback=theMap"></script>
+}
