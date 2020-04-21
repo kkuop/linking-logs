@@ -1,0 +1,40 @@
+﻿@model LinkingLogsWebApp.Views.ViewModels.JobBidViewModel
+
+@{
+    ViewData["Title"] = "Bid";
+    Layout = "~/Views/Shared/_TruckerLayout.cshtml";
+}
+
+<h1>Bid</h1>
+
+<h4>JobBid</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Bid">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input type="hidden" asp-for="@Model.JobBid.JobBidId" class="form-control" />
+                <span asp-validation-for="@Model.JobBid.JobBidId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.JobBid.AmountBid" class="control-label"></label>
+                <input asp-for="@Model.JobBid.AmountBid" class="form-control" />
+                <span asp-validation-for="@Model.JobBid.AmountBid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <input type="hidden" value="@Model.Job.JobId" asp-for="@Model.JobBid.JobId" class="form-control" />
+                <span asp-validation-for="@Model.JobBid.JobId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Bid" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

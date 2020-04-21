@@ -108,10 +108,10 @@
 else
 {
     <script>
-        function theMap() {
-            var myProp = {
+        function initMap() {
+            var mapProp = {
                 center: new google.maps.LatLng(@Model.ActiveSites.ToList()[0].Latitude,@Model.ActiveSites.ToList()[0].Longitude),
-                zoom:10,
+                zoom:6,
             };
             var map = new google.maps.Map(document.getElementById("theMap"), mapProp);
             var infoWindow = new google.maps.InfoWindow();
@@ -132,5 +132,5 @@ else
             }
         }
     </script>
-    <script src="https://maps.googleapis.com/maps/js?key=@ApiKeys.GoogleKey&callback=theMap"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=@ApiKeys.GoogleKey&callback=initMap"></script>
 }

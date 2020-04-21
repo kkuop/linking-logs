@@ -28,10 +28,12 @@ namespace LinkingLogsWebApp.Controllers
             var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
             var sites = _repo.Site.FindByCondition(a => a.SiteManagerId == foundUser.SiteManagerId).OrderBy(a=>a.Name);
             var woodTypes = _repo.WoodType.FindAll().OrderBy(a=>a.Type);
+            var mills = _repo.Mill.FindAll().OrderBy(a => a.Name);
             Job job = new Job()
             {
                 Sites = sites,
-                WoodTypes = woodTypes
+                WoodTypes = woodTypes,
+                Mills = mills
             };
             return View(job);
         }
@@ -122,6 +124,21 @@ namespace LinkingLogsWebApp.Controllers
                 job.WoodType = foundWood;
             }
             return View(jobSite);
+        }
+
+        // GET: Jobs/Bid/5
+        [Authorize(Roles ="Trucker")]
+        public ActionResult Bid(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var foundJob = _repo.Job.FindByCondition(a => a.JobId == id).SingleOrDefault();
+            JobBidViewModel jobBid = new JobBidViewModel()
+            {
+                Job = foundJob,
+                JobBid = new JobBid()
+            };
+            return View(jobBid);
         }
 
         // POST: Jobs/Create

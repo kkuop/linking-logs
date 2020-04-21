@@ -1,8 +1,94 @@
-﻿
+﻿@model LinkingLogsWebApp.Views.ViewModels.TruckerIndexViewModel
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_TruckerLayout.cshtml";
 }
 
-<h1>Trucker Index</h1>
+    <div class="container-fluid">
+        <div class="row ll-row">
+            <div class="col-2">
+                <a asp-controller="Truckers" asp-action="OpenJobs">
+                    <div class="row ll-status-box text-center">
+                        <div class="col">
+                            <div class="row ll-status-header">
+                                <div class="col">
+                                    <span>Open<br />Jobs</span>
+                                </div>
+                            </div>
+                            <div class="row ll-status-content">
+                                <div class="col">
+                                    @Model.SuggestedJobs.ToList().Count
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a asp-controller="Truckers" asp-action="PendingJobs">
+                    <div class="row ll-status-box text-center">
+                        <div class="col">
+                            <div class="row ll-status-header">
+                                <div class="col">
+                                    <span>Pending<br />Jobs</span>
+                                </div>
+                            </div>
+                            <div class="row ll-status-content">
+                                <div class="col">
+                                    @Model.PendingJobs.ToList().Count
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col">
+                        <h3>Suggested Jobs</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Distance</th>
+                                        <th>Site</th>
+                                        <th>Mill</th>
+                                        <th>Wood</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.SuggestedJobs.ToList().Count < 1)
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in Model.SuggestedJobs)
+                                        {
+                                            <tr>
+                                                <td>@Html.Raw(item.Distance) mi</td>
+                                                <td>@Html.Raw(item.Site.Name)</td>
+                                                <td>@Html.Raw(item.Mill.Name)</td>
+                                                <td>@Html.Raw(item.WoodType.Type)</td>
+                                                <td>
+                                                    <a asp-controller="Jobs" asp-action="Bid" asp-route-id="@item.JobId"><input type="button" value="Bid" class="btn btn-primary" /></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                Column 3
+            </div>
+        </div>
+    </div>
 

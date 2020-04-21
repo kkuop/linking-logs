@@ -13,6 +13,8 @@ namespace LinkingLogsWebApp.Contracts
         ISiteManagerRepository SiteManager { get; }
         ITruckerRepository Trucker { get; }
         IWoodTypeRepository WoodType { get; }
+        IMillRepository Mill { get; }
+        IMillWoodTypeRepository MillWoodType { get; }
         void Save();
     }
 }

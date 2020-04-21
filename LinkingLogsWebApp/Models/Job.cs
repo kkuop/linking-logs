@@ -19,11 +19,18 @@ namespace LinkingLogsWebApp.Models
         [ForeignKey("WoodType")]
         public int WoodTypeId { get; set; }
         public WoodType WoodType { get; set; }
+        [ForeignKey("Mill")]
+        public int MillId { get; set; }
+        public Mill Mill { get; set; }
         [NotMapped]
         public IEnumerable<WoodType> WoodTypes { get; set; }
         [NotMapped]
         public IEnumerable<Site> Sites { get; set; }
         [NotMapped]
+        public IEnumerable<Mill> Mills { get; set; }
+        [NotMapped]
         public int Loads { get; set; }
+        [NotMapped]
+        public double Distance { get; set; }
     }
 }

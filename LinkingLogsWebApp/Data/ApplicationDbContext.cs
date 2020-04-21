@@ -16,6 +16,8 @@ namespace LinkingLogsWebApp.Data
         public DbSet<SiteManager> SiteManagers { get; set; }
         public DbSet<Trucker> Truckers { get; set; }
         public DbSet<WoodType> WoodTypes { get; set; }
+        public DbSet<Mill> Mills { get; set; }
+        public DbSet<MillWoodType> MillWoodTypes { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -56,6 +58,42 @@ namespace LinkingLogsWebApp.Data
                     new WoodType { WoodTypeId = 10, Type="Cherry"},
                     new WoodType { WoodTypeId = 11, Type="Chestnut"},
                     new WoodType { WoodTypeId = 12, Type="Ironwood"}
+                );
+            builder.Entity<Mill>()
+                .HasData(
+                    new Mill { MillId = 1, Name="Superior", Address = "N-1064, US-41, Trenary, MI" },
+                    new Mill { MillId = 2, Name="Gwinn", Address = "650 Avenue A, Gwinn, MI"},
+                    new Mill { MillId = 3, Name="Biewer Prentice", Address = "400 Red Pine Ct, Prentice, WI"},
+                    new Mill { MillId = 4, Name="Biewer Lake City", Address="1560 W Houghton Lake Rd, Lake City, MI"},
+                    new Mill { MillId = 5, Name="Biewer McBain", Address = "6251 W Gerwoude Drive, McBain, MI"},
+                    new Mill { MillId = 6, Name="Atwood",Address="1177 17 Mile Rd NE, Cedar Springs, MI"}
+                );
+            builder.Entity<MillWoodType>()
+                .HasData(
+                    new MillWoodType { MillWoodTypeId = 1, MillId = 1, WoodTypeId = 4},
+                    new MillWoodType { MillWoodTypeId = 2, MillId = 1, WoodTypeId = 5},
+                    new MillWoodType { MillWoodTypeId = 3, MillId = 1, WoodTypeId = 6 },
+                    new MillWoodType { MillWoodTypeId = 4, MillId = 1, WoodTypeId = 7 },
+                    new MillWoodType { MillWoodTypeId = 5, MillId = 2, WoodTypeId = 1 },
+                    new MillWoodType { MillWoodTypeId = 6, MillId = 2, WoodTypeId = 2 },
+                    new MillWoodType { MillWoodTypeId = 7, MillId = 2, WoodTypeId = 3 },
+                    new MillWoodType { MillWoodTypeId = 8, MillId = 2, WoodTypeId = 4 },
+                    new MillWoodType { MillWoodTypeId = 9, MillId = 3, WoodTypeId = 8 },
+                    new MillWoodType { MillWoodTypeId = 10, MillId = 3, WoodTypeId = 9 },
+                    new MillWoodType { MillWoodTypeId = 11, MillId = 3, WoodTypeId = 10 },
+                    new MillWoodType { MillWoodTypeId = 12, MillId = 3, WoodTypeId = 11 },
+                    new MillWoodType { MillWoodTypeId = 13, MillId = 4, WoodTypeId = 12 },
+                    new MillWoodType { MillWoodTypeId = 14, MillId = 4, WoodTypeId = 1 },
+                    new MillWoodType { MillWoodTypeId = 15, MillId = 4, WoodTypeId = 3 },
+                    new MillWoodType { MillWoodTypeId = 16, MillId = 4, WoodTypeId = 5 },
+                    new MillWoodType { MillWoodTypeId = 17, MillId = 5, WoodTypeId = 7 },
+                    new MillWoodType { MillWoodTypeId = 18, MillId = 5, WoodTypeId = 9 },
+                    new MillWoodType { MillWoodTypeId = 19, MillId = 5, WoodTypeId = 11 },
+                    new MillWoodType { MillWoodTypeId = 20, MillId = 5, WoodTypeId = 2 },
+                    new MillWoodType { MillWoodTypeId = 21, MillId = 6, WoodTypeId = 4 },
+                    new MillWoodType { MillWoodTypeId = 22, MillId = 6, WoodTypeId = 6 },
+                    new MillWoodType { MillWoodTypeId = 23, MillId = 6, WoodTypeId = 8 },
+                    new MillWoodType { MillWoodTypeId = 24, MillId = 6, WoodTypeId = 10 }
                 );
         }
     }

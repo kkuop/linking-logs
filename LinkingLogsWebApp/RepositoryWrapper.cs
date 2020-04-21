@@ -16,6 +16,8 @@ namespace LinkingLogsWebApp
         private ISiteManagerRepository _siteManager;
         private ITruckerRepository _trucker;
         private IWoodTypeRepository _woodType;
+        private IMillRepository _mill;
+        private IMillWoodTypeRepository _millWoodType;
         public IJobRepository Job
         {
             get
@@ -79,6 +81,28 @@ namespace LinkingLogsWebApp
                     _woodType = new WoodTypeRepository(_context);
                 }
                 return _woodType;
+            }
+        }
+        public IMillRepository Mill
+        {
+            get
+            {
+                if(_mill == null)
+                {
+                    _mill = new MillRepository(_context);
+                }
+                return _mill;
+            }
+        }
+        public IMillWoodTypeRepository MillWoodType
+        {
+            get
+            {
+                if (_millWoodType == null)
+                {
+                    _millWoodType = new MillWoodTypeRepository(_context);
+                }
+                return _millWoodType;
             }
         }
         public RepositoryWrapper(ApplicationDbContext context)

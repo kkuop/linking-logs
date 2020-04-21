@@ -16,6 +16,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using LinkingLogsWebApp.ActionFilters;
 using LinkingLogsWebApp.Contracts;
+using LinkingLogsWebApp.Services;
 
 namespace LinkingLogsWebApp
 {
@@ -40,6 +41,8 @@ namespace LinkingLogsWebApp
                 .AddDefaultTokenProviders();
             services.AddScoped<ClaimsPrincipal>(s => s.GetService<IHttpContextAccessor>().HttpContext.User);
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            services.AddScoped<GoogleGeocodeService>();
+            services.AddScoped<GoogleDistanceService>();
             services.AddControllers(config => { config.Filters.Add(typeof(GlobalRouting)); }) ;
             services.AddControllersWithViews();
             services.AddRazorPages();
