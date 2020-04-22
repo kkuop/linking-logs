@@ -14,5 +14,6 @@ namespace LinkingLogsWebApp.Data
         {
 
         }
+        public IQueryable<JobBid> ReturnWinningBids(Trucker trucker) => FindByCondition(a => a.TruckerId == trucker.TruckerId && a.IsWinningBid == true);
     }
 }

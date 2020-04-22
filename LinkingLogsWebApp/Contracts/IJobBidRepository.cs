@@ -8,5 +8,6 @@ namespace LinkingLogsWebApp.Contracts
 {
     public interface IJobBidRepository : IRepositoryBase<JobBid>
     {
+        public IQueryable<JobBid> ReturnWinningBids(Trucker trucker);
     }
 }

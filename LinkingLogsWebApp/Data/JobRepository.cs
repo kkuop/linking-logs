@@ -14,5 +14,6 @@ namespace LinkingLogsWebApp.Data
         {
 
         }
+        public Job ReturnJob(JobBid jobBid) => FindByCondition(a => a.JobId == jobBid.JobId).SingleOrDefault();
     }
 }

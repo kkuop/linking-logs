@@ -126,20 +126,7 @@ namespace LinkingLogsWebApp.Controllers
             return View(jobSite);
         }
 
-        // GET: Jobs/Bid/5
-        [Authorize(Roles ="Trucker")]
-        public ActionResult Bid(int id)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
-            var foundJob = _repo.Job.FindByCondition(a => a.JobId == id).SingleOrDefault();
-            JobBidViewModel jobBid = new JobBidViewModel()
-            {
-                Job = foundJob,
-                JobBid = new JobBid()
-            };
-            return View(jobBid);
-        }
+
 
         // POST: Jobs/Create
         [HttpPost]

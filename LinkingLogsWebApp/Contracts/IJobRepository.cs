@@ -8,5 +8,6 @@ namespace LinkingLogsWebApp.Contracts
 {
     public interface IJobRepository : IRepositoryBase<Job>
     {
+        public Job ReturnJob(JobBid jobBid);
     }
 }

@@ -5,8 +5,8 @@
 }
 
     <div class="container-fluid">
-        <div class="row ll-row">
-            <div class="col-2">
+        <div class="row">
+            <div class="col-sm-2">
                 <a asp-controller="Truckers" asp-action="OpenJobs">
                     <div class="row ll-status-box text-center">
                         <div class="col">
@@ -40,7 +40,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-8">
+            <div class="col-sm-8">
                 <div class="row">
                     <div class="col">
                         <h3>Suggested Jobs</h3>
@@ -74,7 +74,7 @@
                                                 <td>@Html.Raw(item.Mill.Name)</td>
                                                 <td>@Html.Raw(item.WoodType.Type)</td>
                                                 <td>
-                                                    <a asp-controller="Jobs" asp-action="Bid" asp-route-id="@item.JobId"><input type="button" value="Bid" class="btn btn-primary" /></a>
+                                                    <a asp-controller="JobBids" asp-action="Bid" asp-route-id="@item.JobId"><input type="button" value="Bid" class="btn btn-primary" /></a>
                                                 </td>
                                             </tr>
                                         }
@@ -86,7 +86,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2">
+            <div class="col-sm-2">
                 Column 3
             </div>
         </div>

@@ -36,9 +36,11 @@ namespace LinkingLogsWebApp.Controllers
             }
             //get a list of open jobs and check the distance
             var jobSite = _repo.Job.FindAll().Join(_repo.Site.FindAll(), a => a.SiteId, b => b.SiteId, (a, b) => new { Job = a, Site = b });
-            var jobs = jobSite.Select(a => a.Job).Where(a => a.Status == "Open").ToList();
+            var winningBids = _repo.JobBid.ReturnWinningBids(foundUser);
+            var openJobs = jobSite.Select(a => a.Job).Where(a => a.Status == "Open").ToList();
             var pendingJobs = jobSite.Select(a => a.Job).Where(a => a.Status == "Pending").ToList();
-            foreach(var job in jobs)
+
+            foreach(var job in openJobs)
             {
                 job.Site = _repo.Site.FindByCondition(a => a.SiteId == job.SiteId).SingleOrDefault();
                 job.Mill = _repo.Mill.FindByCondition(a => a.MillId == job.MillId).SingleOrDefault();
@@ -51,7 +53,7 @@ namespace LinkingLogsWebApp.Controllers
             }
             TruckerIndexViewModel model = new TruckerIndexViewModel()
             {
-                SuggestedJobs = jobs,
+                SuggestedJobs = openJobs,
                 PendingJobs = pendingJobs
             };
             return View(model);
