@@ -57,6 +57,8 @@ namespace LinkingLogsWebApp.Controllers
                 return View();
             }
         }
+
+
         // GET: JobBids
         public ActionResult Index()
         {

@@ -70,7 +70,8 @@ namespace LinkingLogsWebApp.Controllers
             {
                 Jobs = openJobs.Select(a => a.JobSite.Job).Where(a => a.Status == "Pending").ToList(),
                 Sites = openJobs.Select(a => a.JobSite.Site).ToList(),
-                SiteManager = openJobs.Select(a => a.SiteManager).FirstOrDefault()
+                SiteManager = openJobs.Select(a => a.SiteManager).FirstOrDefault(),
+                JobBids = _repo.JobBid.FindAll()
             };
             foreach (var job in jobSite.Jobs)
             {
@@ -126,7 +127,14 @@ namespace LinkingLogsWebApp.Controllers
             return View(jobSite);
         }
 
-
+        // GET: Jobs/ViewBids
+        public ActionResult ViewBids(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var jobBids = _repo.JobBid.FindByCondition(a => a.JobId == id).ToList();
+            return View(jobBids);
+        }
 
         // POST: Jobs/Create
         [HttpPost]

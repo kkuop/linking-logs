@@ -11,5 +11,6 @@ namespace LinkingLogsWebApp.Views.ViewModels
         public IEnumerable<Site> Sites { get; set; }
         public IEnumerable<Job> Jobs { get; set; }
         public SiteManager SiteManager { get; set; }
+        public IEnumerable<JobBid> JobBids { get; set; }
     }
 }
