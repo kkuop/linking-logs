@@ -58,6 +58,37 @@ namespace LinkingLogsWebApp.Controllers
             }
         }
 
+        // GET: JobBids/ApproveBid/5
+        public ActionResult ApproveBid(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var foundJobBid = _repo.JobBid.FindByCondition(a => a.JobBidId == id).SingleOrDefault();
+            var foundTrucker = _repo.Trucker.FindByCondition(a => a.TruckerId == foundJobBid.TruckerId).SingleOrDefault();
+            ApproveBidModel model = new ApproveBidModel()
+            {
+                JobBid = foundJobBid,
+                Trucker = foundTrucker
+            };
+            return View(model);
+        }
+
+        // POST: JobBids/ApproveBid/5
+        [HttpPost]
+        public ActionResult ApproveBid(int id, JobBid jobBid)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var foundJobBid = _repo.JobBid.FindByCondition(a => a.JobBidId == id).SingleOrDefault();
+            var foundJob = _repo.Job.FindByCondition(a => a.JobId == foundJobBid.JobId).SingleOrDefault();
+            foundJob.Status = "Approved";
+            _repo.Job.Update(foundJob);
+            foundJobBid.IsWinningBid = true;
+            _repo.JobBid.Update(foundJobBid);
+            _repo.Save();
+            return RedirectToAction("Index", "SiteManagers");
+        }
+
 
         // GET: JobBids
         public ActionResult Index()

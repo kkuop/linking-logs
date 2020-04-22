@@ -133,7 +133,25 @@ namespace LinkingLogsWebApp.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
             var jobBids = _repo.JobBid.FindByCondition(a => a.JobId == id).ToList();
-            return View(jobBids);
+            var foundJob = _repo.Job.FindByCondition(a => a.JobId == id).SingleOrDefault();
+            var allTruckers = _repo.Trucker.FindAll().ToList();
+            foreach(var item in allTruckers)
+            {
+                foreach (var bid in jobBids)
+                {
+                    if (bid.TruckerId == item.TruckerId)
+                    {
+                        bid.Trucker = item;
+                    }
+                }
+            }
+            ViewBidModel model = new ViewBidModel()
+            {
+                Job = foundJob,
+                JobBids = jobBids,
+                
+            };
+            return View(model);
         }
 
         // POST: Jobs/Create

@@ -1,69 +1,53 @@
-﻿@model IEnumerable<LinkingLogsWebApp.Models.JobBid>
+﻿@model LinkingLogsWebApp.Views.ViewModels.ViewBidModel
 
 @{
     ViewData["Title"] = "ViewBids";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>View Bids</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6">
+            <h1>View Bids</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.JobBidId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsWinningBid)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AmountBid)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.JobId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TruckerId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model.ToList().Count < 1)
-        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Bidder
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.JobBids[0].AmountBid)
+                        </th>
 
-        }
-        else
-        {
-            @foreach (var item in Model.ToList())
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.JobBidId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IsWinningBid)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AmountBid)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.JobId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TruckerId)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                    </td>
-                </tr>
-            }
-        }
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.JobBids.ToList().Count < 1)
+                    {
 
-    </tbody>
-</table>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model.JobBids.ToList())
+                        {
+                            <tr>
+                                <td>
+                                    @Html.Raw(item.Trucker.FirstName) @Html.Raw(item.Trucker.LastName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AmountBid)
+                                </td>
+                                <td>
+                                    <a asp-controller="JobBids" asp-action="ApproveBid" asp-route-id="@item.JobBidId">Approve</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

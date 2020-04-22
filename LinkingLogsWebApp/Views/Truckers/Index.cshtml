@@ -7,33 +7,17 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-2">
-                <a asp-controller="Truckers" asp-action="OpenJobs">
+                <a asp-controller="Truckers" asp-action="BidsWon" class="ll-status-box-link">
                     <div class="row ll-status-box text-center">
                         <div class="col">
                             <div class="row ll-status-header">
                                 <div class="col">
-                                    <span>Open<br />Jobs</span>
+                                    <span>Winning<br />Bids</span>
                                 </div>
                             </div>
                             <div class="row ll-status-content">
                                 <div class="col">
                                     @Model.SuggestedJobs.ToList().Count
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                <a asp-controller="Truckers" asp-action="PendingJobs">
-                    <div class="row ll-status-box text-center">
-                        <div class="col">
-                            <div class="row ll-status-header">
-                                <div class="col">
-                                    <span>Pending<br />Jobs</span>
-                                </div>
-                            </div>
-                            <div class="row ll-status-content">
-                                <div class="col">
-                                    @Model.PendingJobs.ToList().Count
                                 </div>
                             </div>
                         </div>
@@ -87,7 +71,38 @@
                 </div>
             </div>
             <div class="col-sm-2">
-                Column 3
+                <a asp-controller="Truckers" asp-action="OpenJobs" class="ll-status-box-link">
+                    <div class="row ll-status-box text-center">
+                        <div class="col">
+                            <div class="row ll-status-header">
+                                <div class="col">
+                                    <span>Open<br />Jobs</span>
+                                </div>
+                            </div>
+                            <div class="row ll-status-content">
+                                <div class="col">
+                                    @Model.SuggestedJobs.ToList().Count
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a asp-controller="Truckers" asp-action="PendingJobs" class="ll-status-box-link">
+                    <div class="row ll-status-box text-center">
+                        <div class="col">
+                            <div class="row ll-status-header">
+                                <div class="col">
+                                    <span>Pending<br />Jobs</span>
+                                </div>
+                            </div>
+                            <div class="row ll-status-content">
+                                <div class="col">
+                                    @Model.PendingJobs.ToList().Count
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>

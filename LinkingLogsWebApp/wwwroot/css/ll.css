@@ -70,7 +70,7 @@
     font-size:1.7em;
 }
 
-a, a:hover {
+.ll-status-box-link, .ll-status-box-link:hover {
     text-decoration: none;
     color: black;
 }
