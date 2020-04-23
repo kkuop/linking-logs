@@ -77,18 +77,26 @@ namespace LinkingLogsWebApp.Controllers
         // GET: SiteManagers/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            return View(foundUser);
         }
 
         // POST: SiteManagers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, SiteManager siteManager)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
             try
             {
                 // TODO: Add update logic here
-
+                foundUser.CompanyName = siteManager.CompanyName;
+                foundUser.FirstName = siteManager.FirstName;
+                foundUser.LastName = siteManager.LastName;
+                _repo.SiteManager.Update(foundUser);
+                _repo.Save();
                 return RedirectToAction(nameof(Index));
             }
             catch

@@ -44,6 +44,9 @@ namespace LinkingLogsWebApp.Controllers
                 var allOpenJobs = _repo.Job.FindByCondition(a => a.Status == "Open");
                 var allJobBids = _repo.JobBid.FindAll();
                 var allPendingNotUser = allJobBids.Where(a => a.TruckerId != foundUser.TruckerId).Select(a => a.Job).ToList();
+                var completedJobs = _repo.JobBid.FindByCondition(a => a.IsWinningBid == true && a.TruckerId == foundUser.TruckerId).ToList();
+                completedJobs = SetKeys(completedJobs);
+                completedJobs = completedJobs.Where(a => a.Job.Status == "Completed").ToList();
                 var listAllOpenJobs = SetKeys(allOpenJobs.ToList());
                 var listAllJobBids = SetKeys(allJobBids.ToList());
                 var suggestedJobs = listAllOpenJobs.Union(allPendingNotUser).ToList();
@@ -54,6 +57,7 @@ namespace LinkingLogsWebApp.Controllers
                     SuggestedJobs = suggestedJobs.OrderBy(a => a.Distance),
                     PendingJobs = listAllJobBids.Where(a => a.Job.Status == "Pending" && a.TruckerId == foundUser.TruckerId).Select(a => a.Job).ToList(),
                     JobsWon = listAllJobBids.Where(a => a.IsWinningBid == true && a.TruckerId == foundUser.TruckerId && a.Job.Status == "Approved").Select(a => a.Job).ToList(),
+                    CompletedJobs = completedJobs.Select(a => a.Job),
                     Trucker = foundUser
                 };
                 return View(model);
@@ -64,6 +68,9 @@ namespace LinkingLogsWebApp.Controllers
                 var allOpenJobs = _repo.Job.FindByCondition(a => a.Status == "Open");
                 var allJobBids = _repo.JobBid.FindAll();
                 var allPendingNotUser = allJobBids.Where(a => a.TruckerId != foundUser.TruckerId).Select(a => a.Job).ToList();
+                var completedJobs = _repo.JobBid.FindByCondition(a => a.IsWinningBid == true && a.TruckerId == foundUser.TruckerId).ToList();
+                completedJobs = SetKeys(completedJobs);
+                completedJobs = completedJobs.Where(a => a.Job.Status == "Completed").ToList();
                 var listAllOpenJobs = SetKeys(allOpenJobs.ToList());
                 var listAllJobBids = SetKeys(allJobBids.ToList());
                 var suggestedJobs = listAllOpenJobs.Union(allPendingNotUser).ToList();
@@ -74,6 +81,7 @@ namespace LinkingLogsWebApp.Controllers
                     SuggestedJobs = suggestedJobs.OrderBy(a => a.Distance),
                     PendingJobs = listAllJobBids.Where(a => a.Job.Status == "Pending" && a.TruckerId == foundUser.TruckerId).Select(a => a.Job).ToList(),
                     JobsWon = listAllJobBids.Where(a => a.IsWinningBid == true && a.TruckerId == foundUser.TruckerId && a.Job.Status == "Approved").Select(a => a.Job).ToList(),
+                    CompletedJobs = completedJobs.Select(a => a.Job),
                     Trucker = foundUser
                 };
                 return View(model);
@@ -103,16 +111,35 @@ namespace LinkingLogsWebApp.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
-            var openJobs = _repo.Job.FindByCondition(a => a.Status == "Open").ToList();
-            foreach(var job in openJobs)
+            var checkWinningBids = _repo.JobBid.FindByCondition(a => a.TruckerId == foundUser.TruckerId).ToList();
+            checkWinningBids = SetKeys(checkWinningBids);
+            checkWinningBids = checkWinningBids.Where(a => a.Job.Status == "Approved").ToList();
+            // GET SUGGESTED BASED ON HOME ADDRESS
+            if (checkWinningBids.Count < 1)
             {
-                job.Mill = _repo.Mill.FindByCondition(a => a.MillId == job.MillId).SingleOrDefault();
-                job.Site = _repo.Site.FindByCondition(a => a.SiteId == job.SiteId).SingleOrDefault();
-                job.WoodType = _repo.WoodType.FindByCondition(a => a.WoodTypeId == job.WoodTypeId).SingleOrDefault();
-                var result = await _distance.GetDistance(job, foundUser, "HomeToSite");
-                job.Distance = ConvertToDouble(result);
+                var allOpenJobs = _repo.Job.FindByCondition(a => a.Status == "Open");
+                var allJobBids = _repo.JobBid.FindAll();
+                var allPendingNotUser = allJobBids.Where(a => a.TruckerId != foundUser.TruckerId).Select(a => a.Job).ToList();
+                var listAllOpenJobs = SetKeys(allOpenJobs.ToList());
+                var listAllJobBids = SetKeys(allJobBids.ToList());
+                var suggestedJobs = listAllOpenJobs.Union(allPendingNotUser).ToList();
+                suggestedJobs = SetKeys(suggestedJobs);
+                suggestedJobs = await SetDistance(suggestedJobs, foundUser, "HomeToSite");
+                return View(suggestedJobs.OrderBy(a => a.Distance));
             }
-            return View(openJobs);
+            // GET SUGGESTED BASED ON MILL LOCATION OF WINNING BID
+            else
+            {
+                var allOpenJobs = _repo.Job.FindByCondition(a => a.Status == "Open");
+                var allJobBids = _repo.JobBid.FindAll();
+                var allPendingNotUser = allJobBids.Where(a => a.TruckerId != foundUser.TruckerId).Select(a => a.Job).ToList();
+                var listAllOpenJobs = SetKeys(allOpenJobs.ToList());
+                var listAllJobBids = SetKeys(allJobBids.ToList());
+                var suggestedJobs = listAllOpenJobs.Union(allPendingNotUser).ToList();
+                suggestedJobs = SetKeys(suggestedJobs);
+                suggestedJobs = await SetDistanceToNextJob(checkWinningBids.Select(a => a.Job).FirstOrDefault(), suggestedJobs);
+                return View(suggestedJobs.OrderBy(a => a.Distance));
+            }
         }
 
         // GET: Truckers/PendingJobs
@@ -133,6 +160,17 @@ namespace LinkingLogsWebApp.Controllers
                 job.WoodType = _repo.WoodType.FindByCondition(a => a.WoodTypeId == job.WoodTypeId).SingleOrDefault();
             }
             return View(jobs);
+        }
+
+        // GET: Truckers/CompletedJobs
+        public ActionResult CompletedJobs()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var completedJobs = _repo.JobBid.FindByCondition(a => a.IsWinningBid == true && a.TruckerId == foundUser.TruckerId).ToList();
+            completedJobs = SetKeys(completedJobs);
+            completedJobs = completedJobs.Where(a => a.Job.Status == "Completed").ToList();
+            return View(completedJobs.Select(a=>a.Job).ToList());
         }
 
         // GET: Truckers/Directions/5
@@ -184,18 +222,27 @@ namespace LinkingLogsWebApp.Controllers
         // GET: Truckers/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            return View(foundUser);
         }
 
         // POST: Truckers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Trucker trucker)
         {
             try
             {
                 // TODO: Add update logic here
-
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+                foundUser.CompanyName = trucker.CompanyName;
+                foundUser.FirstName = trucker.FirstName;
+                foundUser.HomeAddress = trucker.HomeAddress;
+                foundUser.LastName = trucker.LastName;
+                _repo.Trucker.Update(foundUser);
+                _repo.Save();
                 return RedirectToAction(nameof(Index));
             }
             catch

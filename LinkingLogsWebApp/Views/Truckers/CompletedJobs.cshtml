@@ -1,11 +1,12 @@
 ﻿@model IEnumerable<LinkingLogsWebApp.Models.Job>
 
 @{
-    ViewData["Title"] = "OpenJobs";
+    ViewData["Title"] = "CompletedJobs";
     Layout = "~/Views/Shared/_TruckerLayout.cshtml";
 }
 
-<h1>Available Jobs</h1>
+<h1>Completed Jobs</h1>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-8">
@@ -13,18 +14,17 @@
                 <thead>
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model.Distance)
+                            @Html.DisplayNameFor(model => model.JobId)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Site.Name)
+                            @Html.DisplayNameFor(model => model.Site)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.WoodType.Type)
+                            @Html.DisplayNameFor(model => model.WoodType)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Mill.Name)
+                            @Html.DisplayNameFor(model => model.Mill)
                         </th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,7 +32,7 @@
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Distance)
+                                @Html.DisplayFor(modelItem => item.JobId)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Site.Name)
@@ -42,9 +42,6 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Mill.Name)
-                            </td>
-                            <td>
-                                <a asp-controller="JobBids" asp-action="Bid" asp-route-id="@item.JobId"><input type="button" value="Bid" class="btn btn-primary" /></a>
                             </td>
                         </tr>
                     }

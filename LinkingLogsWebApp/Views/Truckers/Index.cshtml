@@ -119,7 +119,22 @@
                         </div>
                     </div>
                 </a>
-
+                <a asp-controller="Truckers" asp-action="CompletedJobs" class="ll-status-box-link">
+                    <div class="row ll-status-box text-center">
+                        <div class="col">
+                            <div class="row ll-status-header">
+                                <div class="col">
+                                    <span>Completed<br />Jobs</span>
+                                </div>
+                            </div>
+                            <div class="row ll-status-content">
+                                <div class="col">
+                                    @Model.CompletedJobs.ToList().Count
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
