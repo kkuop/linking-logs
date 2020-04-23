@@ -16,10 +16,23 @@ namespace LinkingLogsWebApp.Services
             if(endPoints == "HomeToSite")
             {
                 url = $"https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={trucker.HomeAddress}&destinations={job.Site.Latitude},{job.Site.Longitude}&key={ApiKeys.GoogleKey}";
-            } else if(endPoints == "SiteToMill")
+            } else if(endPoints == "MillToNextSite")
             {
                 url = $"https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={job.Site.Latitude},{job.Site.Longitude}&destinations={job.Mill.Address}&key={ApiKeys.GoogleKey}";
             }
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                string json = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<DistanceJson>(json);
+            }
+            return null;
+        }
+
+        public async Task<DistanceJson> GetDistanceToNextJob(Job job, Job nextJob)
+        {
+            string url = $"https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={job.Mill.Address}&destinations={nextJob.Site.Latitude},{nextJob.Site.Longitude}&key={ApiKeys.GoogleKey}";
             HttpClient client = new HttpClient();
             HttpResponseMessage response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)

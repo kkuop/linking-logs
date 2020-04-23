@@ -43,7 +43,14 @@
             <div class="col-sm-8">
                 <div class="row">
                     <div class="col">
-                        <h3>Suggested Jobs</h3>
+                        @if (Model.JobsWon.ToList().Count < 1)
+                        {
+                            <h3>Suggested Jobs From Home</h3>
+                        }
+                        else
+                        {
+                            <h3>Suggested Jobs Near Winning Bid</h3>
+                        }
                     </div>
                 </div>
                 <div class="row">
@@ -53,7 +60,14 @@
                                 <thead>
                                     <tr>
                                         <th>Job Id</th>
-                                        <th>Distance</th>
+                                        @if (Model.JobsWon.ToList().Count < 1)
+                                        {
+                                            <th>Distance</th>
+                                        }
+                                        else
+                                        {
+                                            <th>Distance From Mill</th>
+                                        }
                                         <th>Site</th>
                                         <th>Mill</th>
                                         <th>Wood</th>

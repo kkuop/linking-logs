@@ -10,5 +10,6 @@ namespace LinkingLogsWebApp.Views.ViewModels
     {
         public Job Job { get; set; }
         public Trucker Trucker { get; set; }
+        
     }
 }

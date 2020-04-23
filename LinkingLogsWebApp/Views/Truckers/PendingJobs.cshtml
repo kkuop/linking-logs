@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_TruckerLayout.cshtml";
 }
 
-<h1>PendingJobs</h1>
+<h1>Pending Bids</h1>
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-8">
@@ -14,9 +14,6 @@
                     <tr>
                         <th>
                             @Html.DisplayNameFor(model => model.FirstOrDefault().JobId)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.FirstOrDefault().Distance)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.FirstOrDefault().Site)
@@ -36,9 +33,6 @@
                         <tr>
                             <td>
                                 @Html.DisplayFor(modelItem => item.JobId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Distance)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Site.Name)

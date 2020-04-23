@@ -35,24 +35,49 @@ namespace LinkingLogsWebApp.Controllers
             {
                 return RedirectToAction("Create");
             }
-            //get a list of open jobs and check the distance
-            //var jobSite = _repo.Job.FindAll().Join(_repo.Site.FindAll(), a => a.SiteId, b => b.SiteId, (a, b) => new { Job = a, Site = b });
-            var allOpenJobs = _repo.Job.FindByCondition(a => a.Status == "Open");
-            var allJobBids = _repo.JobBid.FindAll();
-            var allPendingNotUser = allJobBids.Where(a => a.TruckerId != foundUser.TruckerId).Select(a => a.Job).ToList();
-            var listAllOpenJobs = SetKeys(allOpenJobs.ToList());
-            var listAllJobBids = SetKeys(allJobBids.ToList());
-            var suggestedJobs = listAllOpenJobs.Union(allPendingNotUser).ToList();
-            suggestedJobs = SetKeys(suggestedJobs);
-            suggestedJobs = await SetDistance(suggestedJobs, foundUser);
-            TruckerIndexViewModel model = new TruckerIndexViewModel()
+            var checkWinningBids = _repo.JobBid.FindByCondition(a => a.TruckerId == foundUser.TruckerId).ToList();
+            checkWinningBids = SetKeys(checkWinningBids);
+            checkWinningBids = checkWinningBids.Where(a => a.Job.Status == "Approved").ToList();
+            // GET SUGGESTED BASED ON HOME ADDRESS
+            if (checkWinningBids.Count < 1)
             {
-                SuggestedJobs = suggestedJobs,
-                PendingJobs = listAllJobBids.Where(a => a.Job.Status == "Pending" && a.TruckerId == foundUser.TruckerId).Select(a => a.Job).ToList(),
-                JobsWon = listAllJobBids.Where(a=>a.IsWinningBid == true && a.TruckerId == foundUser.TruckerId).Select(a=>a.Job).ToList(),
-                Trucker = foundUser
-            };
-            return View(model);
+                var allOpenJobs = _repo.Job.FindByCondition(a => a.Status == "Open");
+                var allJobBids = _repo.JobBid.FindAll();
+                var allPendingNotUser = allJobBids.Where(a => a.TruckerId != foundUser.TruckerId).Select(a => a.Job).ToList();
+                var listAllOpenJobs = SetKeys(allOpenJobs.ToList());
+                var listAllJobBids = SetKeys(allJobBids.ToList());
+                var suggestedJobs = listAllOpenJobs.Union(allPendingNotUser).ToList();
+                suggestedJobs = SetKeys(suggestedJobs);
+                suggestedJobs = await SetDistance(suggestedJobs, foundUser, "HomeToSite");
+                TruckerIndexViewModel model = new TruckerIndexViewModel()
+                {
+                    SuggestedJobs = suggestedJobs.OrderBy(a => a.Distance),
+                    PendingJobs = listAllJobBids.Where(a => a.Job.Status == "Pending" && a.TruckerId == foundUser.TruckerId).Select(a => a.Job).ToList(),
+                    JobsWon = listAllJobBids.Where(a => a.IsWinningBid == true && a.TruckerId == foundUser.TruckerId && a.Job.Status == "Approved").Select(a => a.Job).ToList(),
+                    Trucker = foundUser
+                };
+                return View(model);
+            }
+            // GET SUGGESTED BASED ON MILL LOCATION OF WINNING BID
+            else
+            {
+                var allOpenJobs = _repo.Job.FindByCondition(a => a.Status == "Open");
+                var allJobBids = _repo.JobBid.FindAll();
+                var allPendingNotUser = allJobBids.Where(a => a.TruckerId != foundUser.TruckerId).Select(a => a.Job).ToList();
+                var listAllOpenJobs = SetKeys(allOpenJobs.ToList());
+                var listAllJobBids = SetKeys(allJobBids.ToList());
+                var suggestedJobs = listAllOpenJobs.Union(allPendingNotUser).ToList();
+                suggestedJobs = SetKeys(suggestedJobs);
+                suggestedJobs = await SetDistanceToNextJob(checkWinningBids.Select(a => a.Job).FirstOrDefault(), suggestedJobs);
+                TruckerIndexViewModel model = new TruckerIndexViewModel()
+                {
+                    SuggestedJobs = suggestedJobs.OrderBy(a => a.Distance),
+                    PendingJobs = listAllJobBids.Where(a => a.Job.Status == "Pending" && a.TruckerId == foundUser.TruckerId).Select(a => a.Job).ToList(),
+                    JobsWon = listAllJobBids.Where(a => a.IsWinningBid == true && a.TruckerId == foundUser.TruckerId && a.Job.Status == "Approved").Select(a => a.Job).ToList(),
+                    Trucker = foundUser
+                };
+                return View(model);
+            }
         }
 
         // GET: Truckers/BidsWon/
@@ -69,7 +94,8 @@ namespace LinkingLogsWebApp.Controllers
                 bid.Job.Mill = _repo.Mill.FindByCondition(a => a.MillId == bid.Job.MillId).SingleOrDefault();
                 bid.Job.WoodType = _repo.WoodType.FindByCondition(a => a.WoodTypeId == bid.Job.WoodTypeId).SingleOrDefault();
             }
-            return View(winningBids);
+            var result = winningBids.Where(a => a.Job.Status == "Approved");
+            return View(result);
         }
 
         // GET: Truckers/OpenJobs
@@ -116,6 +142,7 @@ namespace LinkingLogsWebApp.Controllers
             var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
             var foundJob = _repo.Job.FindByCondition(a => a.JobId == id).SingleOrDefault();
             foundJob.Site = _repo.Site.FindByCondition(a => a.SiteId == foundJob.SiteId).SingleOrDefault();
+            foundJob.Mill = _repo.Mill.FindByCondition(a => a.MillId == foundJob.MillId).SingleOrDefault();
             DirectionsViewModel model = new DirectionsViewModel()
             {
                 Job = foundJob,
@@ -232,12 +259,22 @@ namespace LinkingLogsWebApp.Controllers
         {
             return jobs.Union(jobsToRemove).ToList();
         }
-        public async Task<List<Job>> SetDistance(List<Job> jobs, Trucker foundUser)
+        public async Task<List<Job>> SetDistance(List<Job> jobs, Trucker foundUser, string direction)
         {
             foreach (var job in jobs)
             {
-                var result = await _distance.GetDistance(job, foundUser, "HomeToSite");
+                var result = await _distance.GetDistance(job, foundUser, direction);
                 job.Distance = ConvertToDouble(result);
+            }
+            return jobs;
+        }
+
+        public async Task<List<Job>> SetDistanceToNextJob(Job job, List<Job> jobs)
+        {
+            foreach(var item in jobs)
+            {
+                var result = await _distance.GetDistanceToNextJob(job, item);
+                item.Distance = ConvertToDouble(result);
             }
             return jobs;
         }

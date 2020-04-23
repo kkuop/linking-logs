@@ -229,6 +229,31 @@ namespace LinkingLogsWebApp.Controllers
             }
         }
 
+        // GET: Jobs/Deliver/5
+        public ActionResult Deliver(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var foundJob = _repo.Job.FindByCondition(a => a.JobId == id).SingleOrDefault();
+            foundJob.Mill = _repo.Mill.FindByCondition(a => a.MillId == foundJob.MillId).SingleOrDefault();
+            foundJob.Site = _repo.Site.FindByCondition(a => a.SiteId == foundJob.SiteId).SingleOrDefault();
+            foundJob.WoodType = _repo.WoodType.FindByCondition(a => a.WoodTypeId == foundJob.WoodTypeId).SingleOrDefault();
+            return View(foundJob);
+        }
+
+        // POST: Jobs/Deliver
+        [HttpPost]
+        public ActionResult Deliver(int id, Job job)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var foundJob = _repo.Job.FindByCondition(a => a.JobId == id).SingleOrDefault();
+            foundJob.Status = "Completed";
+            _repo.Job.Update(foundJob);
+            _repo.Save();
+            return RedirectToAction("Index", "Truckers");
+        }
+
         // GET: Jobs/Delete/5
         public ActionResult Delete(int id)
         {
