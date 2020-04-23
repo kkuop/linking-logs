@@ -17,7 +17,23 @@
                             </div>
                             <div class="row ll-status-content">
                                 <div class="col">
-                                    @Model.SuggestedJobs.ToList().Count
+                                    @Model.JobsWon.ToList().Count
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a asp-controller="Truckers" asp-action="PendingJobs" class="ll-status-box-link">
+                    <div class="row ll-status-box text-center">
+                        <div class="col">
+                            <div class="row ll-status-header">
+                                <div class="col">
+                                    <span>Pending<br />Bids</span>
+                                </div>
+                            </div>
+                            <div class="row ll-status-content">
+                                <div class="col">
+                                    @Model.PendingJobs.ToList().Count
                                 </div>
                             </div>
                         </div>
@@ -36,6 +52,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
+                                        <th>Job Id</th>
                                         <th>Distance</th>
                                         <th>Site</th>
                                         <th>Mill</th>
@@ -53,6 +70,7 @@
                                         @foreach (var item in Model.SuggestedJobs)
                                         {
                                             <tr>
+                                                <td>@Html.Raw(item.JobId)</td>
                                                 <td>@Html.Raw(item.Distance) mi</td>
                                                 <td>@Html.Raw(item.Site.Name)</td>
                                                 <td>@Html.Raw(item.Mill.Name)</td>
@@ -87,22 +105,7 @@
                         </div>
                     </div>
                 </a>
-                <a asp-controller="Truckers" asp-action="PendingJobs" class="ll-status-box-link">
-                    <div class="row ll-status-box text-center">
-                        <div class="col">
-                            <div class="row ll-status-header">
-                                <div class="col">
-                                    <span>Pending<br />Jobs</span>
-                                </div>
-                            </div>
-                            <div class="row ll-status-content">
-                                <div class="col">
-                                    @Model.PendingJobs.ToList().Count
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
+
             </div>
         </div>
     </div>

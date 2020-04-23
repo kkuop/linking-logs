@@ -10,6 +10,7 @@ using LinkingLogsWebApp.Views.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static LinkingLogsWebApp.Services.GoogleDistanceService;
 
 namespace LinkingLogsWebApp.Controllers
 {
@@ -35,34 +36,92 @@ namespace LinkingLogsWebApp.Controllers
                 return RedirectToAction("Create");
             }
             //get a list of open jobs and check the distance
-            var jobSite = _repo.Job.FindAll().Join(_repo.Site.FindAll(), a => a.SiteId, b => b.SiteId, (a, b) => new { Job = a, Site = b });
-            var winningBids = _repo.JobBid.ReturnWinningBids(foundUser);
-            var openJobs = jobSite.Select(a => a.Job).Where(a => a.Status == "Open").ToList();
-            var pendingJobs = jobSite.Select(a => a.Job).Where(a => a.Status == "Pending").ToList();
-
-            foreach(var job in openJobs)
-            {
-                job.Site = _repo.Site.FindByCondition(a => a.SiteId == job.SiteId).SingleOrDefault();
-                job.Mill = _repo.Mill.FindByCondition(a => a.MillId == job.MillId).SingleOrDefault();
-                job.WoodType = _repo.WoodType.FindByCondition(a => a.WoodTypeId == job.WoodTypeId).SingleOrDefault();
-                var result = await _distance.GetDistance(job, foundUser, "HomeToSite");
-                var distance = result.rows[0].elements[0].distance.text;
-                distance = distance.Replace("m","").Replace("i","").Trim();
-                var dd = double.Parse(distance);
-                job.Distance = dd;
-            }
+            //var jobSite = _repo.Job.FindAll().Join(_repo.Site.FindAll(), a => a.SiteId, b => b.SiteId, (a, b) => new { Job = a, Site = b });
+            var allOpenJobs = _repo.Job.FindByCondition(a => a.Status == "Open");
+            var allJobBids = _repo.JobBid.FindAll();
+            var allPendingNotUser = allJobBids.Where(a => a.TruckerId != foundUser.TruckerId).Select(a => a.Job).ToList();
+            var listAllOpenJobs = SetKeys(allOpenJobs.ToList());
+            var listAllJobBids = SetKeys(allJobBids.ToList());
+            var suggestedJobs = listAllOpenJobs.Union(allPendingNotUser).ToList();
+            suggestedJobs = SetKeys(suggestedJobs);
+            suggestedJobs = await SetDistance(suggestedJobs, foundUser);
             TruckerIndexViewModel model = new TruckerIndexViewModel()
             {
-                SuggestedJobs = openJobs,
-                PendingJobs = pendingJobs
+                SuggestedJobs = suggestedJobs,
+                PendingJobs = listAllJobBids.Where(a => a.Job.Status == "Pending" && a.TruckerId == foundUser.TruckerId).Select(a => a.Job).ToList(),
+                JobsWon = listAllJobBids.Where(a=>a.IsWinningBid == true && a.TruckerId == foundUser.TruckerId).Select(a=>a.Job).ToList(),
+                Trucker = foundUser
             };
             return View(model);
         }
 
-        // GET: Truckers/Details/5
-        public ActionResult Details(int id)
+        // GET: Truckers/BidsWon/
+        public ActionResult BidsWon()
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var winningBids = _repo.JobBid.ReturnWinningBids(foundUser).ToList();
+            foreach(var bid in winningBids)
+            {
+                bid.Job = _repo.Job.FindByCondition(a => a.JobId == bid.JobId).SingleOrDefault();
+                bid.Trucker = _repo.Trucker.FindByCondition(a => a.TruckerId == bid.TruckerId).SingleOrDefault();
+                bid.Job.Site = _repo.Site.FindByCondition(a => a.SiteId == bid.Job.SiteId).SingleOrDefault();
+                bid.Job.Mill = _repo.Mill.FindByCondition(a => a.MillId == bid.Job.MillId).SingleOrDefault();
+                bid.Job.WoodType = _repo.WoodType.FindByCondition(a => a.WoodTypeId == bid.Job.WoodTypeId).SingleOrDefault();
+            }
+            return View(winningBids);
+        }
+
+        // GET: Truckers/OpenJobs
+        public async Task<ActionResult> OpenJobs()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var openJobs = _repo.Job.FindByCondition(a => a.Status == "Open").ToList();
+            foreach(var job in openJobs)
+            {
+                job.Mill = _repo.Mill.FindByCondition(a => a.MillId == job.MillId).SingleOrDefault();
+                job.Site = _repo.Site.FindByCondition(a => a.SiteId == job.SiteId).SingleOrDefault();
+                job.WoodType = _repo.WoodType.FindByCondition(a => a.WoodTypeId == job.WoodTypeId).SingleOrDefault();
+                var result = await _distance.GetDistance(job, foundUser, "HomeToSite");
+                job.Distance = ConvertToDouble(result);
+            }
+            return View(openJobs);
+        }
+
+        // GET: Truckers/PendingJobs
+        public ActionResult PendingJobs()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var pendingJobs = _repo.JobBid.FindByCondition(a => a.TruckerId == foundUser.TruckerId);
+            foreach (var bid in pendingJobs)
+            {
+                bid.Job = _repo.Job.FindByCondition(a => a.JobId == bid.JobId).SingleOrDefault();
+            }
+            var jobs = pendingJobs.Where(a => a.Job.Status == "Pending").Select(a => a.Job).ToList();
+            foreach(var job in jobs)
+            {
+                job.Mill = _repo.Mill.FindByCondition(a => a.MillId == job.MillId).SingleOrDefault();
+                job.Site = _repo.Site.FindByCondition(a => a.SiteId == job.SiteId).SingleOrDefault();
+                job.WoodType = _repo.WoodType.FindByCondition(a => a.WoodTypeId == job.WoodTypeId).SingleOrDefault();
+            }
+            return View(jobs);
+        }
+
+        // GET: Truckers/Directions/5
+        public ActionResult Directions(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var foundJob = _repo.Job.FindByCondition(a => a.JobId == id).SingleOrDefault();
+            foundJob.Site = _repo.Site.FindByCondition(a => a.SiteId == foundJob.SiteId).SingleOrDefault();
+            DirectionsViewModel model = new DirectionsViewModel()
+            {
+                Job = foundJob,
+                Trucker = foundUser
+            };
+            return View(model);
         }
 
         // GET: Truckers/Create
@@ -139,6 +198,48 @@ namespace LinkingLogsWebApp.Controllers
             {
                 return View();
             }
+        }
+        
+        public double ConvertToDouble(DistanceJson result)
+        {
+            var distance = result.rows[0].elements[0].distance.text;
+            distance = distance.Replace("m", "").Replace("i", "").Trim();
+            var dd = double.Parse(distance);
+            return dd;
+        }
+        public List<JobBid> SetKeys(List<JobBid> queryable)
+        {
+            foreach (var bid in queryable)
+            {
+                bid.Job = _repo.Job.FindByCondition(a => a.JobId == bid.JobId).SingleOrDefault();
+                bid.Job.Mill = _repo.Mill.FindByCondition(a => a.MillId == bid.Job.MillId).SingleOrDefault();
+                bid.Job.Site = _repo.Site.FindByCondition(a => a.SiteId == bid.Job.SiteId).SingleOrDefault();
+                bid.Job.WoodType = _repo.WoodType.FindByCondition(a => a.WoodTypeId == bid.Job.WoodTypeId).SingleOrDefault();
+            }
+            return queryable;
+        }
+        public List<Job> SetKeys(List<Job> queryable)
+        {
+            foreach (var bid in queryable)
+            {
+                bid.Mill = _repo.Mill.FindByCondition(a => a.MillId == bid.MillId).SingleOrDefault();
+                bid.Site = _repo.Site.FindByCondition(a => a.SiteId == bid.SiteId).SingleOrDefault();
+                bid.WoodType = _repo.WoodType.FindByCondition(a => a.WoodTypeId == bid.WoodTypeId).SingleOrDefault();
+            }
+            return queryable;
+        }
+        public List<Job> RemoveUserBids(List<Job> jobs, List<Job> jobsToRemove)
+        {
+            return jobs.Union(jobsToRemove).ToList();
+        }
+        public async Task<List<Job>> SetDistance(List<Job> jobs, Trucker foundUser)
+        {
+            foreach (var job in jobs)
+            {
+                var result = await _distance.GetDistance(job, foundUser, "HomeToSite");
+                job.Distance = ConvertToDouble(result);
+            }
+            return jobs;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace LinkingLogsWebApp.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
-            var sites = _repo.Site.FindByCondition(a => a.SiteManagerId == foundUser.SiteManagerId).OrderBy(a=>a.Name);
+            var sites = _repo.Site.FindByCondition(a => a.SiteManagerId == foundUser.SiteManagerId).Where(a => a.IsActive == true).OrderBy(a=>a.Name);
             var woodTypes = _repo.WoodType.FindAll().OrderBy(a=>a.Type);
             var mills = _repo.Mill.FindAll().OrderBy(a => a.Name);
             Job job = new Job()
@@ -54,8 +54,10 @@ namespace LinkingLogsWebApp.Controllers
             {
                 var foundSite = _repo.Site.FindByCondition(a => a.SiteId == job.SiteId).SingleOrDefault();
                 var foundWood = _repo.WoodType.FindByCondition(a => a.WoodTypeId == job.WoodTypeId).SingleOrDefault();
+                var foundMill = _repo.Mill.FindByCondition(a => a.MillId == job.MillId).SingleOrDefault();
                 job.Site = foundSite;
                 job.WoodType = foundWood;
+                job.Mill = foundMill;
             }
             return View(jobSite);
         }
@@ -99,8 +101,10 @@ namespace LinkingLogsWebApp.Controllers
             {
                 var foundSite = _repo.Site.FindByCondition(a => a.SiteId == job.SiteId).SingleOrDefault();
                 var foundWood = _repo.WoodType.FindByCondition(a => a.WoodTypeId == job.WoodTypeId).SingleOrDefault();
+                var foundMill = _repo.Mill.FindByCondition(a => a.MillId == job.MillId).SingleOrDefault();
                 job.Site = foundSite;
                 job.WoodType = foundWood;
+                job.Mill = foundMill;
             }
             return View(jobSite);
         }

@@ -1,0 +1,61 @@
+﻿@model IEnumerable<LinkingLogsWebApp.Models.Job>
+
+@{
+    ViewData["Title"] = "PendingJobs";
+    Layout = "~/Views/Shared/_TruckerLayout.cshtml";
+}
+
+<h1>PendingJobs</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().JobId)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().Distance)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().Site)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().WoodType)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().Mill)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.JobId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Distance)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Site.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.WoodType.Type)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Mill.Name)
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

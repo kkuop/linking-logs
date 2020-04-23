@@ -1,0 +1,58 @@
+﻿@model IEnumerable<LinkingLogsWebApp.Models.JobBid>
+
+@{
+    ViewData["Title"] = "BidsWon";
+    Layout = "~/Views/Shared/_TruckerLayout.cshtml";
+}
+
+<h1>BidsWon</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Job.LoadSize)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Job.Site.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Job.WoodType.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Job.Mill.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Job.Distance)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Job.LoadSize)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Job.Site.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Job.WoodType.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Job.Mill.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Job.Distance)
+            </td>
+            <td>
+                <a asp-action="Directions" asp-route-id="@item.JobId">Directions</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
