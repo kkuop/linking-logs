@@ -4,49 +4,64 @@
     ViewData["Title"] = "Completed";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="row ll-form-shadow">
+                <div class="col">
+                    <div class="row">
+                        <div class="col text-center">
+                            <h2 class="ll-form-header">Completed Jobs</h2>
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Jobs.FirstOrDefault().WoodType)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Jobs.FirstOrDefault().Site)
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model == null)
+                                    {
 
-<h1>Completed</h1>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in Model.Jobs)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.Raw(item.WoodType.Type)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.Site.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.ActionLink("Edit", "Edit", new { id = item.JobId }) |
+                                                    @Html.ActionLink("Details", "Details", new { id = item.JobId }) |
+                                                    @Html.ActionLink("Delete", "Delete", new { id = item.JobId })
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Jobs.FirstOrDefault().WoodType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Jobs.FirstOrDefault().Site)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model == null)
-        {
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        }
-        else
-        {
-            @foreach (var item in Model.Jobs)
-            {
-                <tr>
-                    <td>
-                        @Html.Raw(item.WoodType.Type)
-                    </td>
-                    <td>
-                        @Html.Raw(item.Site.Name)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.JobId }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.JobId }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.JobId })
-                    </td>
-                </tr>
-            }
-        }
-
-    </tbody>
-</table>
 

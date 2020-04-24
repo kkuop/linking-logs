@@ -4,59 +4,74 @@
     ViewData["Title"] = "ActiveSites";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Active Sites</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-7">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Name)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.OpeningDate)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ClosingDate)
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model == null)
-                    {
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="row ll-form-shadow">
+                <div class="col">
+                    <div class="row">
+                        <div class="col text-center">
+                            <h2 class="ll-form-header">Active Sites</h2>
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p>
+                                <a asp-action="Create">Create New</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Name)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.OpeningDate)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.ClosingDate)
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model == null)
+                                    {
 
-                    }
-                    else
-                    {
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                <td>
-                                    @Html.Raw(item.OpeningDate.ToShortDateString())
-                                </td>
-                                <td>
-                                    @Html.Raw(item.ClosingDate.ToShortDateString())
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Edit", "Edit", new { id = item.SiteId }) |
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.SiteId })
-                                </td>
-                            </tr>
-                        }
-                    }
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.OpeningDate.ToShortDateString())
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.ClosingDate.ToShortDateString())
+                                                </td>
+                                                <td>
+                                                    @Html.ActionLink("Edit", "Edit", new { id = item.SiteId }) |
+                                                    @Html.ActionLink("Delete", "Delete", new { id = item.SiteId })
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
 
-                </tbody>
-            </table>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

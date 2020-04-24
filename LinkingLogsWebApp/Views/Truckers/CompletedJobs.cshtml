@@ -5,48 +5,60 @@
     Layout = "~/Views/Shared/_TruckerLayout.cshtml";
 }
 
-<h1>Completed Jobs</h1>
-
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-8">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.JobId)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Site)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.WoodType)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Mill)
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.JobId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Site.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.WoodType.Type)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Mill.Name)
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="row ll-form-shadow">
+                <div class="col">
+                    <div class="row">
+                        <div class="col text-center">
+                            <h2 class="ll-form-header">Completed Jobs</h2>
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.JobId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Site)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.WoodType)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Mill)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.JobId)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Site.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.WoodType.Type)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Mill.Name)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

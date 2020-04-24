@@ -4,59 +4,68 @@
     ViewData["Title"] = "Open";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Open</h1>
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-8">
-            <p>
-                <a asp-action="Create">Create New</a>
-            </p>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Jobs.FirstOrDefault().WoodType)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Jobs.FirstOrDefault().Site)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Jobs.FirstOrDefault().Mill)
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model == null)
-                    {
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="row ll-form-shadow">
+                <div class="col">
+                    <div class="row">
+                        <div class="col text-center">
+                            <h2 class="ll-form-header">Open Jobs</h2>
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Jobs.FirstOrDefault().WoodType)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Jobs.FirstOrDefault().Site)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Jobs.FirstOrDefault().Mill)
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model == null)
+                                    {
 
-                    }
-                    else
-                    {
-                        @foreach (var item in Model.Jobs)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.Raw(item.WoodType.Type)
-                                </td>
-                                <td>
-                                    @Html.Raw(item.Site.Name)
-                                </td>
-                                <td>
-                                    @Html.Raw(item.Mill.Name)
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Edit", "Edit", new { id = item.JobId }) |
-                                    @Html.ActionLink("Details", "Details", new { id = item.JobId }) |
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.JobId })
-                                </td>
-                            </tr>
-                        }
-                    }
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in Model.Jobs)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.Raw(item.WoodType.Type)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.Site.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.Mill.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.ActionLink("Edit", "Edit", new { id = item.JobId }) |
+                                                    @Html.ActionLink("Details", "Details", new { id = item.JobId }) |
+                                                    @Html.ActionLink("Delete", "Delete", new { id = item.JobId })
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
 
-                </tbody>
-            </table>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
