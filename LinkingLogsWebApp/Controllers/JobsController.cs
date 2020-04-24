@@ -259,19 +259,26 @@ namespace LinkingLogsWebApp.Controllers
         // GET: Jobs/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var foundJob = _repo.Job.FindByCondition(a => a.JobId == id).SingleOrDefault();
+            return View(foundJob);
         }
 
         // POST: Jobs/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Job job)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.SiteManager.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
             try
             {
                 // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
+                var foundJob = _repo.Job.FindByCondition(a => a.JobId == id).SingleOrDefault();
+                _repo.Job.Delete(foundJob);
+                _repo.Save();
+                return RedirectToAction("Index","SiteManagers");
             }
             catch
             {

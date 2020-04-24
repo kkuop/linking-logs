@@ -6,7 +6,7 @@
 }
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-8">
             <div class="row ll-form-shadow">
                 <div class="col">
                     <div class="row">
@@ -26,7 +26,6 @@
                                         <th>
                                             @Html.DisplayNameFor(model => model.Jobs.FirstOrDefault().Site)
                                         </th>
-                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -44,11 +43,6 @@
                                                 </td>
                                                 <td>
                                                     @Html.Raw(item.Site.Name)
-                                                </td>
-                                                <td>
-                                                    @Html.ActionLink("Edit", "Edit", new { id = item.JobId }) |
-                                                    @Html.ActionLink("Details", "Details", new { id = item.JobId }) |
-                                                    @Html.ActionLink("Delete", "Delete", new { id = item.JobId })
                                                 </td>
                                             </tr>
                                         }

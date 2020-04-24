@@ -33,7 +33,7 @@ namespace LinkingLogsWebApp.Controllers
             SiteManagerIndexViewModel siteManagerIndexViewModel = new SiteManagerIndexViewModel()
             {
                 AllSites = _repo.Site.FindByCondition(a => a.SiteManagerId == foundUser.SiteManagerId),
-                UpcomingSites = _repo.Site.FindByCondition(a => a.OpeningDate > DateTime.Now),
+                UpcomingSites = _repo.Site.FindByCondition(a => a.OpeningDate > DateTime.Now && a.SiteManagerId == foundUser.SiteManagerId),
                 ActiveSites = _repo.Site.FindByCondition(a => a.OpeningDate < DateTime.Now && a.ClosingDate > DateTime.Now && a.SiteManagerId == foundUser.SiteManagerId),
                 OpenJobs = jobs.Select(a => a.JobSite.Job).Where(a => a.Status == "Open"),
                 PendingJobs = jobs.Select(a => a.JobSite.Job).Where(a => a.Status == "Pending"),
