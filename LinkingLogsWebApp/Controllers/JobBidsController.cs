@@ -9,6 +9,7 @@ using LinkingLogsWebApp.Views.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace LinkingLogsWebApp.Controllers
 {
@@ -89,6 +90,34 @@ namespace LinkingLogsWebApp.Controllers
             return RedirectToAction("Index", "SiteManagers");
         }
 
+        // GET: JobBids/Pay/5
+        public ActionResult Pay(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var foundUser = _repo.Trucker.FindByCondition(a => a.IdentityUserId == userId).SingleOrDefault();
+            var jobBid = _repo.JobBid.FindByCondition(a => a.JobId == id).SingleOrDefault();
+            jobBid.Job = _repo.Job.FindByCondition(a => a.JobId == jobBid.JobId).SingleOrDefault();
+            var intent = new PaymentIntent();
+            return View(jobBid);
+        }
+
+        // POST: JobBids/Pay
+        [HttpPost]
+        public ActionResult Pay(string stripeToken)
+        {
+            StripeConfiguration.ApiKey = $"{ApiKeys.StripeSecretKey}";
+
+            var options = new ChargeCreateOptions
+            {
+                Amount = 2000,
+                Currency = "usd",
+                Source = stripeToken,
+                Description = "My First Test Charge (created for API docs)",
+            };
+            var service = new ChargeService();
+            service.Create(options);
+            return RedirectToAction("Index","Truckers");
+        }
 
         // GET: JobBids
         public ActionResult Index()

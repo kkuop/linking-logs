@@ -254,6 +254,8 @@ namespace LinkingLogsWebApp.Controllers
             return RedirectToAction("Index", "Truckers");
         }
 
+
+
         // GET: Jobs/Delete/5
         public ActionResult Delete(int id)
         {

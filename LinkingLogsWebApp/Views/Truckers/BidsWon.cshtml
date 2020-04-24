@@ -5,59 +5,72 @@
     Layout = "~/Views/Shared/_TruckerLayout.cshtml";
 }
 
-<h1>Bids Won</h1>
-
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-8">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Job.LoadSize)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Job.Site.Name)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Job.WoodType.Type)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Job.Mill.Name)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Job.Distance)
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Job.LoadSize)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Job.Site.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Job.WoodType.Type)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Job.Mill.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Job.Distance)
-                            </td>
-                            <td>
-                                <a asp-action="Directions" asp-route-id="@item.JobId">Directions | </a>
-                                <a asp-controller="Jobs" asp-action="Deliver" asp-route-id="@item.JobId">Deliver</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="row ll-form-shadow">
+                <div class="col">
+                    <div class="row">
+                        <div class="col text-center">
+                            <h2 class="ll-form-header">Bids Won</h2>
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Job.LoadSize)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Job.Site.Name)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Job.WoodType.Type)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Job.Mill.Name)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Job.Distance)
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Job.LoadSize)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Job.Site.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Job.WoodType.Type)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Job.Mill.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Job.Distance)
+                                            </td>
+                                            <td>
+                                                <a asp-controller="JobBids" asp-action="Pay" asp-route-id="@item.JobId">Pay |</a>
+                                                <a asp-action="Directions" asp-route-id="@item.JobId"> Directions |</a>
+                                                <a asp-controller="Jobs" asp-action="Deliver" asp-route-id="@item.JobId"> Deliver</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
