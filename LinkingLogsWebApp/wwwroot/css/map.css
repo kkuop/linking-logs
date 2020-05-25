@@ -3,9 +3,11 @@
 }
 
 html, body {
-    height: 100%;
+    height: auto;
     margin: 0;
     padding: 0;
+    overflow:scroll;
+    padding-bottom:65px;
 }
 
 #floating-panel {
@@ -20,4 +22,8 @@ html, body {
     font-family: 'Roboto','sans-serif';
     line-height: 30px;
     padding-left: 10px;
+}
+
+table {
+    margin-bottom:2rem;
 }
