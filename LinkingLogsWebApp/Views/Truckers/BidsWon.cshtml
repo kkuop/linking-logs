@@ -25,16 +25,13 @@
                                             @Html.DisplayNameFor(model => model.Job.LoadSize)
                                         </th>
                                         <th>
-                                            @Html.DisplayNameFor(model => model.Job.Site.Name)
+                                            @Html.DisplayNameFor(model => model.Job.Site)
                                         </th>
                                         <th>
                                             @Html.DisplayNameFor(model => model.Job.WoodType.Type)
                                         </th>
                                         <th>
-                                            @Html.DisplayNameFor(model => model.Job.Mill.Name)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Job.Distance)
+                                            @Html.DisplayNameFor(model => model.Job.Mill)
                                         </th>
                                         <th></th>
                                     </tr>
@@ -54,9 +51,6 @@
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.Job.Mill.Name)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Job.Distance)
                                             </td>
                                             <td>
                                                 <a asp-controller="JobBids" asp-action="Pay" asp-route-id="@item.JobId">Pay |</a>
